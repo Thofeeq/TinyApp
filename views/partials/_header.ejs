@@ -1,2 +1,15 @@
 <header>
+    
+    <%if(!username) {%>
+    <form action="/login" method="POST"  style=" display:inline!important;>
+      <label for="longURL">Username:</label>
+      <input id="username" type="text" name="username" placeholder="" style="width: 140px;">
+      <input type="submit" value="Login">
+    </form>
+    <% } else{ %>
+    <p>Welcome! <%=username%></p>
+    <form action="/logout" method="post" style=" display:inline!important;">
+      <button type="submit" name="logout"  class="badge badge-pill badge-primary">Logout</button>
+    </form>
+    <% }%>
 </header>
