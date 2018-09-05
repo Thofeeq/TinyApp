@@ -23,7 +23,19 @@ function generateRandomString(strLength) {
     return str;
 }
 
+function validateURL(urlToTest)
+{
+  const protocolString = "http://";
+  let charToCheck = [];
+  charToCheck = urlToTest.split('');
 
+  if(charToCheck[3] === 'p' && charToCheck[4] === ':'){
+    return urlToTest;
+  }else {
+      return protocolString + urlToTest;
+  }
+
+}
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
@@ -40,6 +52,7 @@ app.get("/urls.json", (req, res) => {
 app.get("/urls", (req, res) => {
   let templateVars = { urls: urlDatabase };
   res.render("urls_index", templateVars);
+  console.log(templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
@@ -52,8 +65,8 @@ app.get("/hello", (req, res) => {
 app.get("/u/:shortURL", (req, res) => {
   // let longURL = ...
   console.log(`${urlDatabase[req.params.shortURL]}`);
-  
-  res.redirect(`http://${urlDatabase[req.params.shortURL]}`);
+  res.statusCode = 301;
+  res.redirect(`${urlDatabase[req.params.shortURL]}`);
 });
 
 app.get("/urls/:id", (req, res) => {
@@ -64,9 +77,24 @@ app.get("/urls/:id", (req, res) => {
 app.post("/urls", (req, res) => {
   let randomShortURL = "";
   randomShortURL = generateRandomString(6);
-  urlDatabase[randomShortURL]= req.body.longURL;
-  res.redirect(`http://localhost:${PORT}/u/${randomShortURL}`);   
+  
+  urlDatabase[randomShortURL]= validateURL(req.body.longURL);
+  res.redirect(`http://localhost:${PORT}/urls`);   
   console.log(urlDatabase);      
+});
+
+app.post("/urls/:shortURLID/", (req, res) => {
+
+  let shortURLID = req.params.shortURLID;
+  urlDatabase[shortURLID]= validateURL(req.body.longURL);
+  res.redirect(`http://localhost:${PORT}/urls`);   
+  console.log(urlDatabase);      
+});
+
+app.post("/urls/:shortURLID/delete", (req, res) => {
+  console.log(req.params.shortURLID);
+  delete urlDatabase[req.params.shortURLID];
+  res.redirect(`http://localhost:${PORT}/urls`);
 });
 
 app.listen(PORT, () => {
