@@ -1,0 +1,23 @@
+{
+  "name": "tinyapp",
+  "version": "1.0.0",
+  "description": "An app to shorten long URLs",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app.js [long-url]"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Thofeeq/TinyApp.git"
+  },
+  "author": "Thofeeq",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Thofeeq/TinyApp/issues"
+  },
+  "homepage": "https://github.com/Thofeeq/TinyApp#readme",
+  "dependencies": {
+    "ejs": "^2.6.1",
+    "express": "^4.16.3"
+  }
+}
