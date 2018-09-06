@@ -10,6 +10,20 @@ var urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com",
 };
+
+const users = { 
+  "userRandomID": {
+    id: "userRandomID", 
+    email: "user@example.com", 
+    password: "purp"
+  },
+ "user2RandomID": {
+    id: "user2RandomID", 
+    email: "user2@example.com", 
+    password: "dish"
+  }
+}
+
 app.use(cookieParser())
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
@@ -78,11 +92,17 @@ app.get("/u/:shortURL", (req, res) => {
   res.statusCode = 301;
   res.redirect(`${urlDatabase[req.params.shortURL]}`);
 });
+app.get("/register", (req, res) => {
+  let templateVars = { username: req.cookies["username"],shortURL: req.params.id,longURL: urlDatabase[req.params.id] };
+  res.render("urls_register", templateVars);
+});
 
 app.get("/urls/:id", (req, res) => {
   let templateVars = { username: req.cookies["username"],shortURL: req.params.id,longURL: urlDatabase[req.params.id] };
   res.render("urls_show", templateVars);
 });
+
+
 
 app.post("/urls", (req, res) => {
   let randomShortURL = "";
@@ -106,6 +126,20 @@ app.post("/urls/:shortURLID/delete", (req, res) => {
   delete urlDatabase[req.params.shortURLID];
   res.redirect(`http://localhost:${PORT}/urls`);
 });
+
+
+app.post("/register", (req, res) => {
+
+
+ users.id = generateRandomString(6);
+ users.email = req.body.email;
+ users.password = req.body.password;
+//  if(users.email || users.email===Object.keys(users)[])
+ res.cookie('userId', users.id);
+ console.log(users);
+ res.redirect("/urls");
+});
+
 
 app.post("/login", (req, res) => {
   username = req.body.username;
