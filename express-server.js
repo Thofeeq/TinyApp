@@ -1,12 +1,12 @@
 "use strict";
-var express = require("express");
-var app = express();
-var PORT = 8080; // default port 8080
-var cookieParser = require('cookie-parser')
+const express = require("express");
+let app = express();
+const PORT = 8080; // default port 8080
+const cookieParser = require('cookie-parser')
 const bodyParser = require("body-parser");
 let username = "";
 
-var urlDatabase = {
+const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com",
 };
@@ -38,8 +38,8 @@ function generateRandomString(strLength) {
     for(var i = 0; i < strLength; i++)
     {
       let randomNum = String.fromCharCode(Math.random() * (122 - 65) + 65);
-      if(randomNum == 92) {
-        random + 1
+      if(randomNum === '/' || randomNum === '\\') {
+        randomNum = 'x';
       };
       outputArray.push(randomNum);
     }
