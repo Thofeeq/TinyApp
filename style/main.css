@@ -4,21 +4,15 @@ body
   padding:0;
 }
 
-.login
+.login-register
 {
+  top:1px;
   position: absolute;
   display: inline;
-  right:30px;
+  right:3px;
 }
 
-.login p
-{
-  white-space: nowrap;
-  padding:auto;
-  position: absolute;  
-  color: blue;  
-  right:80px;
-}
+
 
 .urls ul
 {

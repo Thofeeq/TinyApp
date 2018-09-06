@@ -1,19 +1,14 @@
 <header>
-  <div class="login">
-    <%if(!username) {%>
-    <form action="/login" method="POST"  style=" display:inline!important;>
-      <label for="longURL">Username:</label>
-      <input id="usernamel" type="text" name="username" placeholder="" style="width: 140px;">
-      <input type="submit" value="Login">
-    </form>
-    <% } else{ %>
-      
-          <p id="username" >Welcome! <%=username%></p>
-          <form id ="logout" action="/logout" method="post" style=" display:inline!important;">
-            <button type="submit" name="logout"  class="badge badge-pill badge-primary">Logout</button>
-          </form>
-     
-
-    <% }%>
+    
+    <%if(!(status.isLoggedIn)) { %>
+    <div class = "login-register">
+      <button type="button"  onclick="location.href='/login';" class="btn btn-outline-success">Login</button>
+      <button type="button"  onclick="location.href='/register';" class="btn btn-outline-primary">Register</button>
     </div>
-</header>
+    <% } else {%>
+    <div class = "welcome-user">
+      <p style="display:inline"> Welcome! <%=status.cookieOwner%> </p>
+      <form action="/logout" method="POST" style="display: inline"><button type="submit" class="btn btn-outline-danger">Logout</button></form>
+    </div>
+     <% } %>  
+  </header>

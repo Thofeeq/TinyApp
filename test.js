@@ -1,50 +1,25 @@
-function generateRandomString(strLength) {
-  
-  let outputArray = [];
-  let str = "";
-  console.log("heres the slash" + '\\');
-  
-    for(var i = 0; i < strLength; i++)
-    {
-      let randomNum = String.fromCharCode(Math.random() * (122 - 65) + 65);
-      if(randomNum === '\\' || randomNum === '/') {
-        randomNum = 'a';
-      };
-      outputArray.push(randomNum);
+function getID(object,emailValue){
+  let arrayOfKeys = Object.keys(object);
+  let ID = "";
+  arrayOfKeys.forEach(function(key){  
+    if(object[key].email === emailValue ) {
+       ID = key;
     }
-    console.log(outputArray);
-    
-    str = outputArray.join('');
-    return str;
+  });
+return ID;
 }
 
-generateRandomString(6)
+let users = { 
+  "userRandomID": {
+    id: "userRandomID", 
+    email: "user@example.com", 
+    password: "purp"
+  },
+ "user2RandomID": {
+    id: "user2RandomID", 
+    email: "user2@example.com", 
+    password: "dish"
+  }
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// function validateURL(urlToTest)
-// {
-//   const protocolString = "http://";
-//   let charToCheck = [];
-//   charToCheck = urlToTest.split('');
-
-//   if(charToCheck[3] === 'p' && charToCheck[4] === ':'){
-//     return urlToTest;
-//   }else {
-//       return protocolString + urlToTest;
-//   }
-
-// }
+console.log(getID(users,"user2@example.com"));
