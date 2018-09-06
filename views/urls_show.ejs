@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head></head>
+  <head>
+      <title>TinyApp</title>
+      <link rel="stylesheet" href="/style/main.css">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  </head>
   <body style="font-size:20px; padding:50px;">
     <% include partials/_header %>
-    <h1> <%=shortURL%> </h1>
+    <h1 class="header1"> <%=shortURL%> </h1>
     <form action="/urls/<%=shortURL%>" method="POST" style="margin:150px;">
       <label for="longURL">Update your URL:</label>
       <input id="longURL" type="text" name="longURL" placeholder="current URL: <%=longURL%>" style="width: 300px">

@@ -8,19 +8,26 @@ let username = "";
 
 var urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "9sm5xK": "http://www.google.com",
 };
 app.use(cookieParser())
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
+app.use('/style', express.static('style'));
+
 
 function generateRandomString(strLength) {
   
   let outputArray = [];
   let str = "";
+  
     for(var i = 0; i < strLength; i++)
     {
-      outputArray.push(String.fromCharCode(Math.random() * (122 - 65) + 65));
+      let randomNum = String.fromCharCode(Math.random() * (122 - 65) + 65);
+      if(randomNum == 92) {
+        random + 1
+      };
+      outputArray.push(randomNum);
     }
     console.log(outputArray);
     
@@ -58,7 +65,8 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  let templateVars = {username: req.cookies["username"]}
+  res.render("urls_new", templateVars);
 });
 
 app.get("/hello", (req, res) => {
@@ -72,7 +80,7 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
-  let templateVars = { shortURL: req.params.id,longURL: urlDatabase[req.params.id] };
+  let templateVars = { username: req.cookies["username"],shortURL: req.params.id,longURL: urlDatabase[req.params.id] };
   res.render("urls_show", templateVars);
 });
 

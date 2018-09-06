@@ -1,15 +1,24 @@
-let someurl = "google.com"
-
-
-function validateURL(param)
-
+function generateRandomString(strLength) {
+  
+  let outputArray = [];
+  let str = "";
+  console.log("heres the slash" + '\\');
+  
+    for(var i = 0; i < strLength; i++)
+    {
+      let randomNum = String.fromCharCode(Math.random() * (122 - 65) + 65);
+      if(randomNum === '\\' || randomNum === '/') {
+        randomNum = 'a';
+      };
+      outputArray.push(randomNum);
+    }
+    console.log(outputArray);
+    
+    str = outputArray.join('');
+    return str;
 }
 
-
-
-
-
-
+generateRandomString(6)
 
 
 

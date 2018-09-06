@@ -1,0 +1,36 @@
+body
+{
+  margin:0;
+  padding:0;
+}
+
+.login
+{
+  position: absolute;
+  display: inline;
+  right:30px;
+}
+
+.login p
+{
+  white-space: nowrap;
+  padding:auto;
+  position: absolute;  
+  color: blue;  
+  right:80px;
+}
+
+.urls ul
+{
+  position: absolute;
+  list-style-type: none;
+  margin-top: 20%;
+  margin-left: 35%;
+}
+
+/* .btn-add
+{
+  position: relative;
+  margin-top: 24%;
+  margin-left: 43%;
+} */

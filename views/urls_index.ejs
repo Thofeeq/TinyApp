@@ -3,9 +3,12 @@
 <head>
   <title>TinyApp</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="stylesheet" href="/style/main.css">
+  
 </head>
 <body>
   <% include partials/_header %>
+  <div class = "urls">
     <ul>
       <%Object.keys(urls).forEach(function(url){ %>
         <li> <%= url %> - <%= urls[url] %>  
@@ -16,7 +19,8 @@
       </li>
        <%}); %> 
     </ul>
-    <button type="button" class="btn btn-success"><a style="color:white" href="/urls/new">Shorten!</a></button>
+  </div>
+    <button  type="button" class="btn btn-add btn-success"><a style="color:white" href="/urls/new">Tiny Me!</a></button>
 </body>
 </html>
 
