@@ -2,20 +2,17 @@
 const express = require("express");
 let app = express();
 const PORT = 8080; // default port 8080
-const cookieParser = require("cookie-parser")
+const cookieSession = require("cookie-session")
 const bodyParser = require("body-parser");
+const bcrypt = require('bcrypt');
+
 let errorHTML = {
   emailExistError: false,
   invalidInputError: false,
   invalidCrendential: false,
 }
 
-let cookieStatus = 
-{
-  isLoggedIn : false,
-  cookieOwner: "",
-  cookieValue: "",
-}
+
 
 
 const urlDatabase = {
@@ -40,11 +37,17 @@ const users = {
   }
 }
 
-app.use(cookieParser())
+
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use('/style', express.static('style'));
+app.use(cookieSession({
+  name: 'session',
+  keys: ['development'],
 
+  // Cookie Options
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}));
 
 function doesValueExist(object,property,value){
   let arrayOfKeys = [];
@@ -119,7 +122,7 @@ app.get("/", (req, res) => {
   res.send("Hello!");
 });
 app.get("/login", (req, res) => {
-  let templateVars = {user: users[req.cookies.user_id], error: errorHTML, status: cookieStatus}
+  let templateVars = {user: users[req.session.user_id], error: errorHTML}
   res.render("login", templateVars);
 });
 
@@ -129,14 +132,14 @@ app.get("/urls.json", (req, res) => {
 
 
 app.get("/urls", (req, res) => {
-  let templateVars = {user: users[req.cookies.user_id], urls: urlDatabase, error: errorHTML, status: cookieStatus };
+  let templateVars = {user: users[req.session.user_id], urls: urlDatabase, error: errorHTML};
   res.render("urls_index", templateVars);
   // console.log(templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
-  let templateVars = {user: users[req.cookies.user_id],error: errorHTML, status: cookieStatus}
-  if(!req.cookies.user_id)
+  let templateVars = {user: users[req.session.user_id],error: errorHTML}
+  if(!req.session.user_id)
   {
     return res.redirect("/login");
   }
@@ -150,29 +153,41 @@ app.get("/u/:shortURL", (req, res) => {
   // let longURL = ...
   // console.log(`${urlDatabase[req.params.shortURL]}`);
   res.statusCode = 301;
-  res.redirect(`${urlDatabase[req.params.shortURL]}`);
+  res.redirect(`${urlDatabase[req.params.shortURL].url}`);
 });
 app.get("/register", (req, res) => {
-  let templateVars = {user: users[req.cookies.user_id],shortURL: req.params.id,longURL: urlDatabase[req.params.id],errorCodes: errorHTML, status: cookieStatus };
+  let templateVars = {user: users[req.session.user_id],shortURL: req.params.id,longURL: urlDatabase[req.params.id],errorCodes: errorHTML };
   res.render("urls_register", templateVars);
 });
 
 app.get("/urls/:id", (req, res) => {
-  let templateVars = { user: users[req.cookies.user_id],shortURL: req.params.id,longURL: urlDatabase[req.params.id],error: errorHTML, status: cookieStatus };
-  res.render("urls_show", templateVars);
+  
+  if(req.session.user_id && req.session.user_id=== urlDatabase[req.params.id].urlOwner)
+  {
+    let templateVars = { user: users[req.session.user_id],shortURL: req.params.id,longURL: urlDatabase[req.params.id],error: errorHTML };
+    res.render("urls_show", templateVars);
+  }
+  else if(req.session.user_id)
+  {
+    return res.send("<html><body><p1>ACCESS DENIED</p1></body></html>");
+  }
+  else{
+    return res.redirect("/login");
+  }
+
 });
 
 
 
 app.post("/urls", (req, res) => {
 
-  if(req.cookies.user_id)
+  if(req.session.user_id)
     {
       let randomShortURL = "";
       randomShortURL = generateRandomString(6);
       urlDatabase[randomShortURL] = {};
       urlDatabase[randomShortURL]["url"]= validateURL(req.body.longURL);
-      urlDatabase[randomShortURL]["urlOwner"] = req.cookies.user_id;
+      urlDatabase[randomShortURL]["urlOwner"] = req.session.user_id;
       res.redirect(`http://localhost:${PORT}/urls`); 
     }
   console.log(urlDatabase);
@@ -180,16 +195,22 @@ app.post("/urls", (req, res) => {
 });
 
 app.post("/urls/:shortURLID/", (req, res) => {
-
-  let shortURLID = req.params.shortURLID;
-  urlDatabase[shortURLID]= validateURL(req.body.longURL);
-  res.redirect(`http://localhost:${PORT}/urls`);   
+  if(req.session.user_id)
+  {
+    let shortURLID = req.params.shortURLID;
+    urlDatabase[shortURLID].url= validateURL(req.body.longURL);
+    res.redirect(`http://localhost:${PORT}/urls`);
+  }
+  else{
+    return res.redirect("/login");
+  }
+   
   // console.log(urlDatabase);      
 });
 
 app.post("/urls/:shortURLID/delete", (req, res) => {
   // console.log(req.params.shortURLID);
-  if(req.cookies.user_id)
+  if(req.session.user_id)
   {
     delete urlDatabase[req.params.shortURLID];
     res.redirect(`http://localhost:${PORT}/urls`);
@@ -207,9 +228,9 @@ if(req.body.email && req.body.password){
     users[userID] = {};
     users[userID].id = userID;
     users[userID].email = req.body.email;
-    users[userID].password = req.body.password;
+    users[userID].password = bcrypt.hashSync(req.body.password, 10);
     return res.redirect("/login");
-    // console.log(users);
+    console.log(users);
   } else {
    
     // console.log("User email in db!");
@@ -240,14 +261,14 @@ else{
 app.post("/login", (req, res) => { 
 
   if(doesValueExist(users, "email", req.body.email)){
-    if(getPass(users, req.body.email) === req.body.password){
+    if( bcrypt.compareSync(req.body.password, users[getID(users,req.body.email)].password) ){
       // cookieStatus.isLoggedIn = true;
       // cookieStatus.cookieOwner = req.body.email;
-      res.cookie('user_id',getID(users, req.body.email));
+      req.session.user_id = getID(users, req.body.email);
       // cookieStatus.cookieValue = getID(users, req.body.email);
       // console.log(cookieStatus.cookieValue);
       res.redirect(`http://localhost:${PORT}/urls`)
-   
+      console.log(users);
     }
     else{
       errorHTML.invalidCrendential = true;
@@ -263,7 +284,7 @@ app.post("/login", (req, res) => {
 
 });
 app.post("/logout", (req, res) => {
-  res.clearCookie('user_id');
+  req.session = null;
   // cookieStatus.cookieValue = "";
   // cookieStatus.isLoggedIn = false;
   res.redirect(`http://localhost:${PORT}/urls`);
