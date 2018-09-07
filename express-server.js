@@ -14,12 +14,17 @@ let cookieStatus =
 {
   isLoggedIn : false,
   cookieOwner: "",
+  cookieValue: "",
 }
 
 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com",
+  "b2xVn2":{
+    urlOwner: "user2RandomID",
+    url: "http://www.lighthouselabs.ca"},
+  "9sm5xK": {
+    urlOwner: "user2RandomID",
+    url:  "http://www.google.ca"},
 };
 
 const users = { 
@@ -114,7 +119,7 @@ app.get("/", (req, res) => {
   res.send("Hello!");
 });
 app.get("/login", (req, res) => {
-  let templateVars = {user: users, error: errorHTML, status: cookieStatus}
+  let templateVars = {user: users[req.cookies.user_id], error: errorHTML, status: cookieStatus}
   res.render("login", templateVars);
 });
 
@@ -124,13 +129,17 @@ app.get("/urls.json", (req, res) => {
 
 
 app.get("/urls", (req, res) => {
-  let templateVars = {user: users, urls: urlDatabase, error: errorHTML, status: cookieStatus };
+  let templateVars = {user: users[req.cookies.user_id], urls: urlDatabase, error: errorHTML, status: cookieStatus };
   res.render("urls_index", templateVars);
   // console.log(templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
-  let templateVars = {user: users,error: errorHTML, status: cookieStatus}
+  let templateVars = {user: users[req.cookies.user_id],error: errorHTML, status: cookieStatus}
+  if(!req.cookies.user_id)
+  {
+    return res.redirect("/login");
+  }
   res.render("urls_new", templateVars);
 });
 
@@ -144,23 +153,29 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(`${urlDatabase[req.params.shortURL]}`);
 });
 app.get("/register", (req, res) => {
-  let templateVars = {user:users,shortURL: req.params.id,longURL: urlDatabase[req.params.id],errorCodes: errorHTML, status: cookieStatus };
+  let templateVars = {user: users[req.cookies.user_id],shortURL: req.params.id,longURL: urlDatabase[req.params.id],errorCodes: errorHTML, status: cookieStatus };
   res.render("urls_register", templateVars);
 });
 
 app.get("/urls/:id", (req, res) => {
-  let templateVars = { user:users,shortURL: req.params.id,longURL: urlDatabase[req.params.id],error: errorHTML, status: cookieStatus };
+  let templateVars = { user: users[req.cookies.user_id],shortURL: req.params.id,longURL: urlDatabase[req.params.id],error: errorHTML, status: cookieStatus };
   res.render("urls_show", templateVars);
 });
 
 
 
 app.post("/urls", (req, res) => {
-  let randomShortURL = "";
-  randomShortURL = generateRandomString(6);
-  var cookieParser = require('cookie-parser')
-  urlDatabase[randomShortURL]= validateURL(req.body.longURL);
-  res.redirect(`http://localhost:${PORT}/urls`);   
+
+  if(req.cookies.user_id)
+    {
+      let randomShortURL = "";
+      randomShortURL = generateRandomString(6);
+      urlDatabase[randomShortURL] = {};
+      urlDatabase[randomShortURL]["url"]= validateURL(req.body.longURL);
+      urlDatabase[randomShortURL]["urlOwner"] = req.cookies.user_id;
+      res.redirect(`http://localhost:${PORT}/urls`); 
+    }
+  console.log(urlDatabase);
       
 });
 
@@ -174,8 +189,13 @@ app.post("/urls/:shortURLID/", (req, res) => {
 
 app.post("/urls/:shortURLID/delete", (req, res) => {
   // console.log(req.params.shortURLID);
-  delete urlDatabase[req.params.shortURLID];
-  res.redirect(`http://localhost:${PORT}/urls`);
+  if(req.cookies.user_id)
+  {
+    delete urlDatabase[req.params.shortURLID];
+    res.redirect(`http://localhost:${PORT}/urls`);
+  }
+  
+  
 });
 
 
@@ -221,9 +241,11 @@ app.post("/login", (req, res) => {
 
   if(doesValueExist(users, "email", req.body.email)){
     if(getPass(users, req.body.email) === req.body.password){
-      cookieStatus.isLoggedIn = true;
-      cookieStatus.cookieOwner = req.body.email;
+      // cookieStatus.isLoggedIn = true;
+      // cookieStatus.cookieOwner = req.body.email;
       res.cookie('user_id',getID(users, req.body.email));
+      // cookieStatus.cookieValue = getID(users, req.body.email);
+      // console.log(cookieStatus.cookieValue);
       res.redirect(`http://localhost:${PORT}/urls`)
    
     }
@@ -242,7 +264,8 @@ app.post("/login", (req, res) => {
 });
 app.post("/logout", (req, res) => {
   res.clearCookie('user_id');
-  cookieStatus.isLoggedIn = false;
+  // cookieStatus.cookieValue = "";
+  // cookieStatus.isLoggedIn = false;
   res.redirect(`http://localhost:${PORT}/urls`);
 });
 

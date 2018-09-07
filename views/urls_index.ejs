@@ -8,18 +8,22 @@
 </head>
 <body>
   <% include partials/_header %>
+  <%if(user) {%>
   <div class = "urls">
     <ul>
-      <%Object.keys(urls).forEach(function(url){ %>
-        <li> <%= url %> - <%= urls[url] %>  
-          <button class="badge badge-pill badge-warning"><a style="text-decoration: none; color: white" href="urls/<%= url %>">Edit</a></button>
-          <form action="/urls/<%= url %>/delete" method="post" style=" display:inline!important;">
+      <%Object.keys(urls).forEach(function(urlID){ %>
+       <% if(urls.urlOwner === user.id) { %>
+        <li> <%= urlID %> - <%= urls[urlID][urlOwner] %>  
+          <button class="badge badge-pill badge-warning"><a style="text-decoration: none; color: white" href="urls/<%= urlID %>">Edit</a></button>
+          <form action="/urls/<%= urlID %>/delete" method="post" style=" display:inline!important;">
             <button type="submit" name="delete"  class="badge badge-pill badge-danger">Delete</button>
           </form>
       </li>
+        <%}%>
        <%}); %> 
     </ul>
   </div>
+  <%}%>
     <button  type="button" onclick="location.href='/urls/new';" class="btn btn-add btn-success">Tiny Me!</button>
 </body>
 </html>

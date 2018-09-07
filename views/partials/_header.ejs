@@ -1,14 +1,14 @@
 <header>
     
-    <%if(!(status.isLoggedIn)) { %>
-    <div class = "login-register">
-      <button type="button"  onclick="location.href='/login';" class="btn btn-outline-success">Login</button>
-      <button type="button"  onclick="location.href='/register';" class="btn btn-outline-primary">Register</button>
-    </div>
+    <%if(user) { %>
+      <div class = "welcome-user">
+          <p style="display:inline"> Welcome! <%=user.email%> </p>
+          <form action="/logout" method="POST" style="display: inline"><button type="submit" class="btn btn-outline-danger">Logout</button></form>
+        </div>
     <% } else {%>
-    <div class = "welcome-user">
-      <p style="display:inline"> Welcome! <%=status.cookieOwner%> </p>
-      <form action="/logout" method="POST" style="display: inline"><button type="submit" class="btn btn-outline-danger">Logout</button></form>
-    </div>
+      <div class = "login-register">
+          <button type="button"  onclick="location.href='/login';" class="btn btn-outline-success">Login</button>
+          <button type="button"  onclick="location.href='/register';" class="btn btn-outline-primary">Register</button>
+        </div>
      <% } %>  
   </header>
