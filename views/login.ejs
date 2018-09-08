@@ -31,7 +31,11 @@
        <% if(error.invalidCrendential) { %> 
         <p>Invalid credential! Try Again</p>
         <% error.invalidCrendential =  false; %>
-        <%}%>    
+        <%}%> 
+        <% if(error.invalidInputError) { %> 
+          <p>Invalid input! Try Again</p>
+          <% error.invalidInputError =  false; %>
+          <%}%>       
       </div> 
       <div class = "col-lg-1 top-down red">
         

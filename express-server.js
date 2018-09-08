@@ -282,13 +282,11 @@ if(req.body.email && req.body.password){
     return res.redirect(`/register`);
   }
 } else{
-  console.log("Invalid input");
   errorHTML.invalidInputError = true;
   res.statusCode = 400;
   return res.redirect("/register");
 }
  res.cookie('user_id', users.id);
- console.log(users);
  return res.redirect("/urls");
 });
 
@@ -299,7 +297,6 @@ app.post("/login", (req, res) => {
     if( bcrypt.compareSync(req.body.password, users[getID(users,req.body.email)].password) ){
       req.session.user_id = getID(users, req.body.email);
       res.redirect("/urls")
-      console.log(users);
     }
     else {
       errorHTML.invalidCrendential = true;
@@ -307,7 +304,7 @@ app.post("/login", (req, res) => {
       return res.redirect("/login");
     }
   } else {
-    errorHTML.invalidCrendential = true
+    errorHTML.invalidInputError = true
     res.statusCode = 403;
     return res.redirect("/login");
   }
@@ -316,7 +313,7 @@ app.post("/login", (req, res) => {
 //logout. clear the cookie
 app.post("/logout", (req, res) => {
   req.session = null;
-  res.redirect = 302;
+  res.statusCode = 302;
   res.redirect("/urls");
 });
 
