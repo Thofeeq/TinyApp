@@ -20,7 +20,7 @@
         
         <form action="/urls/<%=shortURL%>" method="POST" style="margin:150px;">
           <label for="longURL">Update your URL:</label>
-          <input id="longURL" type="text" name="longURL" placeholder="current URL: <%=urls[shortURL].url%>" style="width: 300px">
+          <input id="longURL" type="text" name="longURL" placeholder="<%=shortURL%> : <%=urls[shortURL].url%>" style="width: 300px">
           <input type="submit" value="Update">
         </form>
           <div class = "urls">
@@ -33,6 +33,7 @@
                   <th scope="col"><span class="glyphicon glyphicon-trash delete-g"></span></th>
                 </tr>
               </thead>
+              <!--Handles the update of urls-->
               <%Object.keys(urls).forEach(function(urlID){ %>
               <% if(urls[urlID].urlOwner === user.id) { %>
               <tbody>

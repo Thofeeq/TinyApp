@@ -13,50 +13,45 @@
   <div class="container bg-dark">
     <div class = "row">
       <div class = "col-lg-1">
-      
       </div>
       <div class = "col-lg-10">
-        <div class="header-cus"><% include partials/_header %></div>
-        
-          <form class="form-inline form-cus" action="/urls" method="POST">
-            <label for="longURL" style="margin-right: 2%">Enter an URL:</label>
-            <input name="longURL" id="longURL" type="text" class="form-control mr-sm-2" type="search" placeholder="http://" aria-label="Search" style="width:300px">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Shorten!</button>
-          </form>
-
-          <div class = "urls">
-            <table class="table table-grey table-cus">
-              <thead>
-                <tr>
-                  <th scope="col">Shorl URL</th>
-                  <th scope="col">LongURL</th>
-                  <th scope="col"><span class="glyphicon glyphicon-pencil edit-g"></span></th>
-                  <th scope="col"><span class="glyphicon glyphicon-trash delete-g"></span></th>
-                </tr>
-              </thead>
-              <%if(user.id) { %>
-              
-                <%Object.keys(urls).forEach(function(urlID){ %>
-                  <% if(urls[urlID].urlOwner === user.id) { %>
-                  <tbody>
-                    <tr>
-                      <td><a href="u/<%= urlID %>"><%= urlID %></a></td>
-                      <td><%= urls[urlID].url %></td>
-                      <td><button class="badge badge-pill badge-warning"><a style="text-decoration: none; color: white" href="urls/<%= urlID %>">Edit</a></button></td>
-                      <td><form action="/urls/<%= urlID %>/delete" method="post" style=" display:inline!important;">
-                        <button type="submit" name="delete"  class="badge badge-pill badge-danger">Delete</button></td>
-                    </tr>
-                          </div>      
-          <div class = "col-lg-1 top-down red">
-            
+        <div class="header-cus"><% include partials/_header %></div> 
+          
+        <form class="form-inline form-cus" action="/urls" method="POST">
+          <label for="longURL" style="margin-right: 2%">Enter an URL:</label>
+          <input name="longURL" id="longURL" type="text" class="form-control mr-sm-2" type="search" placeholder="http://" aria-label="Search" style="width:300px">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Shorten!</button>
+        </form>
+        <div class = "urls">
+        <table class="table table-grey table-cus">
+          <thead>
+            <tr>
+              <th scope="col">Shorl URL</th>
+              <th scope="col">LongURL</th>
+              <th scope="col"><span class="glyphicon glyphicon-pencil edit-g"></span></th>
+              <th scope="col"><span class="glyphicon glyphicon-trash delete-g"></span></th>
+            </tr>
+          </thead>
+          <!--If user exist, then go through url database, if url owner is current user , display the respective urls/allow modification -->
+          <%if(user.id) { %>
+            <%Object.keys(urls).forEach(function(urlID){ %>
+              <% if(urls[urlID].urlOwner === user.id) { %>
+                <tbody>
+                  <tr>
+                    <td><a href="u/<%= urlID %>"><%= urlID %></a></td>
+                    <td><%= urls[urlID].url %></td>
+                    <td><button class="badge badge-pill badge-warning"><a style="text-decoration: none; color: white" href="urls/<%= urlID %>">Edit</a></button></td>
+                    <td><form action="/urls/<%= urlID %>/delete" method="post" style=" display:inline!important;">
+                      <button type="submit" name="delete"  class="badge badge-pill badge-danger">Delete</button></td>
+                  </tr>
+          </div>      
+          <div class = "col-lg-1 top-down red">  
           </div>     
         </div>
         </div>
       </div>        
-        <%}%>
-      <%}); %>
-             <% } %>
-
-
+            <%}%>
+          <%}); %>
+        <% } %>
 </body>
 </html>

@@ -1,5 +1,5 @@
 <header>
-    
+    <!-- If theres user(cookie), display the welcome message for that user, otherwise show login/register -->
     <%if(user) { %>
       <div class = "welcome-user">
           <p style="display:inline"> Welcome! <%=user.email%> </p>
