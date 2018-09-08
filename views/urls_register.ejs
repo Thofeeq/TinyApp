@@ -5,20 +5,54 @@
       <link rel="stylesheet" href="/style/main.css">
   </head>
   <body style="font-size:20px; padding:0px;">
-      <% include partials/_header %>
-    <form action="/register" method="POST" style="margin:0;">
-      <label for="E-mail">E-mail: </label>
-      <input name = "email" id="email" type="email" name="email" placeholder="youremail@email.com" style="width: 200px">
-      <label for="password">Password: </label>
-      <input name = "password" id="password" type="password" name="password" style="width: 200px">
-      <input type="submit" value="Register">
-    </form>
-    <%if(errorCodes.emailExistError) { %>
-      <p>Error: Email already exist!</p>
-      <% errorCodes.emailExistError = false; %>
-    <% } else if (errorCodes.invalidInputError) { %>
-      <p>Error: Invaid input!</p>
-      <% errorCodes.invalidInputError = false; %>
-    <%}%>
+
   </body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>TinyApp</title>
+  <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="stylesheet" href="/style/main.css">
+  
+</head>
+<body>
+
+  <div class="container bg-dark login-c">
+    <div class = "row">
+      <div class = "col-lg-1">
+          <span><label>Register</label></span>
+      </div>
+      <div class = "col-lg-10">
+          <div class="login">
+          <form action="/register" class="login-form"  method="POST">
+            <label for="E-mail">E-mail: </label>
+            <input name = "email" class="form-control mr-sm-2"id="email" type="email" name="email" placeholder="youremail@email.com" style="width: 200px">
+            <label for="password">Password: </label>
+            <input name = "password" class="form-control mr-sm-2" id="password" type="password" name="password" style="width: 200px">
+            <button type="submit"  class="btn btn-outline-primary btn-lg">Register</button>
+          </form>
+          <div class ="errors">
+          <%if(errorCodes.emailExistError) { %>
+            <p>Error: Email already exist!</p>
+            <% errorCodes.emailExistError = false; %>
+          <% } else if (errorCodes.invalidInputError) { %>
+            <p>Error: Invaid input!</p>
+            <% errorCodes.invalidInputError = false; %>
+          <%}%>
+        </div>
+          </div>
+          </div>
+      <div class = "col-lg-1 top-down red">
+        
+      </div>     
+    </div>
+    </div>
+  </div>        
+
+
+</body>
 </html>
